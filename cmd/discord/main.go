@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 	"github.com/nonya123456/connect4/internal/bot"
 	"github.com/nonya123456/connect4/internal/config"
 	"go.uber.org/zap"
@@ -13,7 +14,7 @@ func main() {
 		_ = logger.Sync()
 	}()
 
-	err := config.LoadENV()
+	err := godotenv.Load()
 	if err != nil {
 		logger.Panic("load env failed", zap.Error(err))
 	}
