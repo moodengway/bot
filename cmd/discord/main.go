@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/nonya123456/connect4/internal/bot"
 	"github.com/nonya123456/connect4/internal/config"
 	"go.uber.org/zap"
 )
@@ -19,13 +20,13 @@ func main() {
 
 	cfg := config.New()
 
-	discord, err := discordgo.New("Bot " + cfg.Token)
+	session, err := discordgo.New("Bot " + cfg.Token)
 	if err != nil {
 		logger.Panic("create session failed", zap.Error(err))
 	}
 
-	_, err = discord.ChannelMessageSend(cfg.ChannelID, "Hello, World")
-	if err != nil {
+	bot := bot.New(cfg.ChannelID, session)
+	if err = bot.Send("Hello, World"); err != nil {
 		logger.Warn("send message failed", zap.Error(err))
 	}
 }
