@@ -5,6 +5,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/nonya123456/connect4/internal/service"
+	"github.com/nonya123456/connect4/internal/util"
 	"go.uber.org/zap"
 )
 
@@ -57,7 +58,7 @@ func (b *Bot) createCommandHandler(s *discordgo.Session, i *discordgo.Interactio
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Embeds: []*discordgo.MessageEmbed{{
-				Description: fmt.Sprintf("<@%s> requested to create a new match", i.Member.User.ID),
+				Description: fmt.Sprintf("Creating a new match from %s", util.Mention(i.Member.User.ID)),
 			}},
 		},
 	})

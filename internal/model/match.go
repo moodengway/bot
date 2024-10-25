@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/nonya123456/connect4/internal/util"
 )
 
 type Match struct {
@@ -22,12 +23,12 @@ const (
 func (m Match) MessageEmbed() discordgo.MessageEmbed {
 	title := fmt.Sprintf("Match#%d", m.ID)
 
-	host := createMention(m.Host)
+	host := util.Mention(m.Host)
 	guest := "N/A"
 	color := Aqua
 
 	if m.Guest != nil {
-		guest = createMention(*m.Guest)
+		guest = util.Mention(*m.Guest)
 		color = Red
 	}
 
@@ -38,8 +39,4 @@ func (m Match) MessageEmbed() discordgo.MessageEmbed {
 		Description: description,
 		Color:       color,
 	}
-}
-
-func createMention(userID string) string {
-	return fmt.Sprintf("<@%s>", userID)
 }
