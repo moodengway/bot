@@ -32,20 +32,29 @@ func (t *ServiceTestSuite) TestCreateMatch() {
 	var matchID uint = 1
 	var messageID string = "testmessageid"
 	var host string = "testhost"
+	var boardString string = "000000000000000000000000000000000000000000"
+	var roundNumber int = 1
 
-	match := model.Match{
-		MessageID: messageID,
-		Host:      host,
+	expectedInputMatch := model.Match{
+		MessageID:   messageID,
+		Host:        host,
+		BoardString: boardString,
+		RoundNumber: roundNumber,
 	}
 
-	t.mockRepo.On("CreateMatch", match).
-		Return(model.Match{ID: matchID, MessageID: messageID, Host: host}, nil).
-		Once()
+	mockOutputMatch := model.Match{
+		ID:          matchID,
+		MessageID:   messageID,
+		Host:        host,
+		BoardString: boardString,
+		RoundNumber: roundNumber,
+	}
+
+	t.mockRepo.On("CreateMatch", expectedInputMatch).Return(mockOutputMatch, nil).Once()
 
 	match, err := t.underTest.CreateMatch(messageID, host)
 	t.NoError(err)
-
-	t.Equal(model.Match{ID: matchID, MessageID: messageID, Host: host}, match)
+	t.Equal(mockOutputMatch, match)
 }
 
 func (t *ServiceTestSuite) TestAcceptMatchNotFound() {

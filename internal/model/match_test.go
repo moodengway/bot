@@ -63,3 +63,63 @@ func TestMatch_MessageEmbed(t *testing.T) {
 func toStringPointer(s string) *string {
 	return &s
 }
+
+func TestMatch_Board(t *testing.T) {
+	type fields struct {
+		ID          uint
+		MessageID   string
+		Host        string
+		Guest       *string
+		BoardString string
+		RoundNumber int
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		want    [6][7]int
+		wantErr bool
+	}{
+		{
+			name:    "invalid length",
+			fields:  fields{BoardString: "0000"},
+			wantErr: true,
+		},
+		{
+			name:    "invalid byte",
+			fields:  fields{BoardString: "300500200000000000000000000000000002000001"},
+			wantErr: true,
+		},
+		{
+			name:   "normal",
+			fields: fields{BoardString: "100000200000000000000000000000000002000001"},
+			want: [6][7]int{
+				{1, 0, 0, 0, 0, 0, 2},
+				{0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0},
+				{2, 0, 0, 0, 0, 0, 1},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := model.Match{
+				ID:          tt.fields.ID,
+				MessageID:   tt.fields.MessageID,
+				Host:        tt.fields.Host,
+				Guest:       tt.fields.Guest,
+				BoardString: tt.fields.BoardString,
+				RoundNumber: tt.fields.RoundNumber,
+			}
+			got, err := m.Board()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Match.Board() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Match.Board() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
