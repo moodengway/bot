@@ -140,7 +140,7 @@ func (b *Bot) acceptReactionHandler(s *discordgo.Session, m *discordgo.MessageRe
 	}
 
 	if !ok {
-		b.logger.Warn("match is not found or is already accepted")
+		b.logger.Debug("match is not found or is already accepted")
 		return
 	}
 
