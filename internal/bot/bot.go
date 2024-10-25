@@ -1,6 +1,8 @@
 package bot
 
 import (
+	"fmt"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/nonya123456/connect4/internal/service"
 	"go.uber.org/zap"
@@ -51,7 +53,26 @@ func (b *Bot) Stop() error {
 }
 
 func (b *Bot) createCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	match, err := b.service.CreateMatch(i.ID, i.Member.User.ID)
+	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Embeds: []*discordgo.MessageEmbed{{
+				Description: fmt.Sprintf("<@%s> requested to create a new match", i.Member.User.ID),
+			}},
+		},
+	})
+	if err != nil {
+		b.logger.Error("error responding ack message", zap.Error(err))
+		return
+	}
+
+	res, err := s.InteractionResponse(i.Interaction)
+	if err != nil {
+		b.logger.Error("error getting ack message", zap.Error(err))
+		return
+	}
+
+	match, err := b.service.CreateMatch(res.ID, i.Member.User.ID)
 	if err != nil {
 		b.logger.Error("error create a new match", zap.Error(err))
 		return
@@ -59,17 +80,10 @@ func (b *Bot) createCommandHandler(s *discordgo.Session, i *discordgo.Interactio
 
 	matchEmbed := match.MessageEmbed()
 
-	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Embeds: []*discordgo.MessageEmbed{&matchEmbed},
-		},
+	_, err = s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
+		Embeds: &[]*discordgo.MessageEmbed{&matchEmbed},
 	})
-
 	if err != nil {
-		b.logger.Error("error responding created", zap.Error(err))
+		b.logger.Error("error editing interaction response", zap.Error(err))
 	}
-
-	m, _ := s.InteractionResponse(i.Interaction)
-	b.logger.Info("created response", zap.String("id", m.ID))
 }
