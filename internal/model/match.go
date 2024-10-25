@@ -35,7 +35,8 @@ func (m Match) MessageEmbed() discordgo.MessageEmbed {
 		color = Red
 	}
 
-	description := fmt.Sprintf("🔴 %s\n\n🟡 %s", host, guest)
+	board, _ := m.boardEmbedString()
+	description := fmt.Sprintf("🔴 %s\n\n🟡 %s\n\n```%s```", host, guest, board)
 
 	return discordgo.MessageEmbed{
 		Title:       title,
@@ -44,14 +45,44 @@ func (m Match) MessageEmbed() discordgo.MessageEmbed {
 	}
 }
 
+func (m Match) boardEmbedString() (string, error) {
+	if len(m.BoardString) != 42 {
+		return "", errors.New("invalid board string length")
+	}
+
+	result := ""
+
+	mapper := make(map[byte]rune)
+	mapper['0'] = '⚪'
+	mapper['1'] = '🔴'
+	mapper['2'] = '🟡'
+
+	for i := 5; i >= 0; i-- {
+		row := ""
+		for j := 0; j < 7; j++ {
+			b := m.BoardString[i*7+j]
+			emoji, ok := mapper[b]
+			if !ok {
+				return "", errors.New("invalid byte in board string")
+			}
+
+			row += fmt.Sprintf("%c ", emoji)
+		}
+
+		row = row[0 : len(row)-1]
+		result += row + "\n"
+	}
+
+	result += "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣"
+	return result, nil
+}
+
 func (m Match) Board() ([6][7]int, error) {
 	var defaultBoard [6][7]int
 
 	if len(m.BoardString) != 42 {
 		return defaultBoard, errors.New("invalid board string length")
 	}
-
-	current := 0
 
 	mapper := make(map[byte]int)
 	mapper['0'] = 0
@@ -68,7 +99,6 @@ func (m Match) Board() ([6][7]int, error) {
 			}
 
 			board[i][j] = num
-			current += 1
 		}
 	}
 
