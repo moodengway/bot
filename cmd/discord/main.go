@@ -16,21 +16,26 @@ func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-		logger.Panic("load env failed", zap.Error(err))
+		logger.Panic("error loading env file", zap.Error(err))
 	}
 
 	cfg := config.New()
 
 	session, err := discordgo.New("Bot " + cfg.Token)
 	if err != nil {
-		logger.Panic("create session failed", zap.Error(err))
+		logger.Panic("error creating session", zap.Error(err))
 	}
-	defer func() {
-		_ = session.Close()
-	}()
 
 	bot := bot.New(cfg.ChannelID, session)
+
+	if err = bot.Start(); err != nil {
+		logger.Panic("error opening connection", zap.Error(err))
+	}
+	defer func() {
+		_ = bot.Stop()
+	}()
+
 	if err = bot.Send("Hello, World"); err != nil {
-		logger.Warn("send message failed", zap.Error(err))
+		logger.Warn("error sending message", zap.Error(err))
 	}
 }

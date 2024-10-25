@@ -12,6 +12,14 @@ type MockSession struct {
 	mock.Mock
 }
 
+func (m *MockSession) Open() error {
+	panic("unimplemented")
+}
+
+func (m *MockSession) Close() error {
+	panic("unimplemented")
+}
+
 func (m *MockSession) ChannelMessageSend(channelID string, content string, options ...discordgo.RequestOption) (*discordgo.Message, error) {
 	var args mock.Arguments
 
