@@ -13,8 +13,8 @@ type MockRepository struct {
 }
 
 // CreateMatch implements service.Repository.
-func (m *MockRepository) CreateMatch(host string) (model.Match, error) {
-	args := m.Called(host)
+func (m *MockRepository) CreateMatch(messageID string, host string) (model.Match, error) {
+	args := m.Called(messageID, host)
 
 	match, ok := args.Get(0).(model.Match)
 	if !ok {

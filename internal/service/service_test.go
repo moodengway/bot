@@ -29,15 +29,16 @@ func (t *ServiceTestSuite) SetupTest() {
 }
 
 func (t *ServiceTestSuite) TestCreateMatch() {
-	var mockMatchID uint = 1
+	var matchID uint = 1
+	var messageID string = "testmessageid"
 	var host string = "testhost"
 
-	t.mockRepo.On("CreateMatch", host).
-		Return(model.Match{ID: mockMatchID, Host: host}, nil).
+	t.mockRepo.On("CreateMatch", messageID, host).
+		Return(model.Match{ID: matchID, MessageID: messageID, Host: host}, nil).
 		Once()
 
-	match, err := t.underTest.CreateMatch(host)
+	match, err := t.underTest.CreateMatch(messageID, host)
 	t.NoError(err)
 
-	t.Equal(model.Match{ID: mockMatchID, Host: host}, match)
+	t.Equal(model.Match{ID: matchID, MessageID: messageID, Host: host}, match)
 }

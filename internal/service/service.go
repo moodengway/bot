@@ -5,7 +5,7 @@ import (
 )
 
 type Repository interface {
-	CreateMatch(host string) (model.Match, error)
+	CreateMatch(messageID string, host string) (model.Match, error)
 }
 
 type Service struct {
@@ -18,8 +18,8 @@ func New(repo Repository) *Service {
 	}
 }
 
-func (s *Service) CreateMatch(host string) (model.Match, error) {
-	return s.repo.CreateMatch(host)
+func (s *Service) CreateMatch(messageID string, host string) (model.Match, error) {
+	return s.repo.CreateMatch(messageID, host)
 }
 
 func (s *Service) Place(i int) error {

@@ -15,9 +15,10 @@ func New(db *gorm.DB) *Repository {
 	}
 }
 
-func (r *Repository) CreateMatch(host string) (model.Match, error) {
+func (r *Repository) CreateMatch(messageID string, host string) (model.Match, error) {
 	match := model.Match{
-		Host: host,
+		MessageID: messageID,
+		Host:      host,
 	}
 
 	if err := r.db.Create(&match).Error; err != nil {

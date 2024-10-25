@@ -51,9 +51,7 @@ func (b *Bot) Stop() error {
 }
 
 func (b *Bot) createCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	userID := i.Member.User.ID
-
-	match, err := b.service.CreateMatch(userID)
+	match, err := b.service.CreateMatch(i.ID, i.Member.User.ID)
 	if err != nil {
 		b.logger.Error("error create a new match", zap.Error(err))
 		return
@@ -71,4 +69,7 @@ func (b *Bot) createCommandHandler(s *discordgo.Session, i *discordgo.Interactio
 	if err != nil {
 		b.logger.Error("error responding created", zap.Error(err))
 	}
+
+	m, _ := s.InteractionResponse(i.Interaction)
+	b.logger.Info("created response", zap.String("id", m.ID))
 }

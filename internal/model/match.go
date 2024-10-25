@@ -7,9 +7,10 @@ import (
 )
 
 type Match struct {
-	ID    uint    `gorm:"column:id;primaryKey;autoIncrement"`
-	Host  string  `gorm:"column:host"`
-	Guest *string `gorm:"column:guest"`
+	ID        uint    `gorm:"column:id;primaryKey;autoIncrement"`
+	MessageID string  `gorm:"column:message_id"`
+	Host      string  `gorm:"column:host"`
+	Guest     *string `gorm:"column:guest"`
 }
 
 const (
