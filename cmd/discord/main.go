@@ -25,6 +25,9 @@ func main() {
 	if err != nil {
 		logger.Panic("create session failed", zap.Error(err))
 	}
+	defer func() {
+		_ = session.Close()
+	}()
 
 	bot := bot.New(cfg.ChannelID, session)
 	if err = bot.Send("Hello, World"); err != nil {
