@@ -28,7 +28,7 @@ func TestMatch_MessageEmbed(t *testing.T) {
 			},
 			want: discordgo.MessageEmbed{
 				Title:       "Match#1111",
-				Description: "Red: <@2222>\nYellow: N/A",
+				Description: "🔴 <@2222>\n\n🟡 N/A",
 				Color:       model.Aqua,
 			},
 		},
@@ -41,7 +41,7 @@ func TestMatch_MessageEmbed(t *testing.T) {
 			},
 			want: discordgo.MessageEmbed{
 				Title:       "Match#1111",
-				Description: "Red: <@2222>\nYellow: <@3333>",
+				Description: "🔴 <@2222>\n\n🟡 <@3333>",
 				Color:       model.Red,
 			},
 		},

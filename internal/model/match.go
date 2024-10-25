@@ -32,7 +32,7 @@ func (m Match) MessageEmbed() discordgo.MessageEmbed {
 		color = Red
 	}
 
-	description := fmt.Sprintf("Red: %s\nYellow: %s", host, guest)
+	description := fmt.Sprintf("🔴 %s\n\n🟡 %s", host, guest)
 
 	return discordgo.MessageEmbed{
 		Title:       title,
