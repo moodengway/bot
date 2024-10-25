@@ -1,8 +1,6 @@
 package bot
 
 import (
-	"fmt"
-
 	"github.com/bwmarrin/discordgo"
 	"github.com/nonya123456/connect4/internal/service"
 	"go.uber.org/zap"
@@ -61,10 +59,12 @@ func (b *Bot) createCommandHandler(s *discordgo.Session, i *discordgo.Interactio
 		return
 	}
 
+	matchEmbed := match.MessageEmbed()
+
 	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("Created match#%d", match.ID),
+			Embeds: []*discordgo.MessageEmbed{&matchEmbed},
 		},
 	})
 
