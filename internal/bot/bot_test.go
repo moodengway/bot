@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/nonya123456/connect4/internal/bot"
+	"github.com/nonya123456/connect4/internal/bot/mock"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -13,7 +14,7 @@ type BotTestSuite struct {
 	bot       *bot.Bot
 	channelID string
 
-	mockSession *MockSession
+	mockSession *mock.MockSession
 }
 
 func TestBotTestSuite(t *testing.T) {
@@ -22,7 +23,7 @@ func TestBotTestSuite(t *testing.T) {
 
 func (t *BotTestSuite) SetupTest() {
 	channelID := "1234"
-	mockSession := new(MockSession)
+	mockSession := new(mock.MockSession)
 
 	t.bot = bot.New(channelID, mockSession)
 	t.mockSession = mockSession

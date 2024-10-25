@@ -1,4 +1,4 @@
-package bot_test
+package mock
 
 import (
 	"github.com/bwmarrin/discordgo"
