@@ -5,8 +5,7 @@ import (
 )
 
 type Config struct {
-	Token     string `envconfig:"TOKEN"`
-	ChannelID string `envconfig:"CHANNEL_ID"`
+	Token string `envconfig:"TOKEN"`
 }
 
 func New() Config {

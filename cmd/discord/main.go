@@ -1,10 +1,14 @@
 package main
 
 import (
+	"os"
+	"os/signal"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
 	"github.com/nonya123456/connect4/internal/bot"
 	"github.com/nonya123456/connect4/internal/config"
+	"github.com/nonya123456/connect4/internal/service"
 	"go.uber.org/zap"
 )
 
@@ -26,7 +30,9 @@ func main() {
 		logger.Panic("error creating session", zap.Error(err))
 	}
 
-	bot := bot.New(cfg.ChannelID, session)
+	service := service.New()
+
+	bot := bot.New(session, service, logger)
 
 	if err = bot.Start(); err != nil {
 		logger.Panic("error opening connection", zap.Error(err))
@@ -35,7 +41,8 @@ func main() {
 		_ = bot.Stop()
 	}()
 
-	if err = bot.Send("Hello, World"); err != nil {
-		logger.Warn("error sending message", zap.Error(err))
-	}
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt)
+	logger.Info("bot is now running")
+	<-stop
 }
