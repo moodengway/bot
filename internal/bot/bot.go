@@ -27,15 +27,15 @@ func (b *Bot) Start() error {
 	}
 
 	_, err = b.session.ApplicationCommandCreate(b.session.State.User.ID, "", &discordgo.ApplicationCommand{
-		Name:        "ping",
-		Description: "Ping Pong",
+		Name:        "create",
+		Description: "Create new match",
 	})
 	if err != nil {
 		return err
 	}
 
 	commandHandlers := make(map[string]func(*discordgo.Session, *discordgo.InteractionCreate))
-	commandHandlers["ping"] = b.pingCommandHandler
+	commandHandlers["create"] = b.createCommandHandler
 
 	b.session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
@@ -50,15 +50,15 @@ func (b *Bot) Stop() error {
 	return b.session.Close()
 }
 
-func (b *Bot) pingCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (b *Bot) createCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: "pong",
+			Content: "Created",
 		},
 	})
 
 	if err != nil {
-		b.logger.Warn("error interaction respond", zap.Error(err))
+		b.logger.Error("error creating a new match", zap.Error(err))
 	}
 }
