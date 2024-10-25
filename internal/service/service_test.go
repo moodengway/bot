@@ -33,7 +33,12 @@ func (t *ServiceTestSuite) TestCreateMatch() {
 	var messageID string = "testmessageid"
 	var host string = "testhost"
 
-	t.mockRepo.On("CreateMatch", messageID, host).
+	match := model.Match{
+		MessageID: messageID,
+		Host:      host,
+	}
+
+	t.mockRepo.On("CreateMatch", match).
 		Return(model.Match{ID: matchID, MessageID: messageID, Host: host}, nil).
 		Once()
 
@@ -41,4 +46,50 @@ func (t *ServiceTestSuite) TestCreateMatch() {
 	t.NoError(err)
 
 	t.Equal(model.Match{ID: matchID, MessageID: messageID, Host: host}, match)
+}
+
+func (t *ServiceTestSuite) TestAcceptMatchNotFound() {
+	var messageID string = "testmessageid"
+	var guest string = "testguest"
+
+	t.mockRepo.On("FindMatchByMessageID", messageID).Return(model.Match{}, false, nil).Once()
+
+	_, ok, err := t.underTest.AcceptMatch(messageID, guest)
+	t.NoError(err)
+	t.Equal(false, ok)
+}
+
+func (t *ServiceTestSuite) TestAcceptMatchAlreadyAccepted() {
+	var messageID string = "testmessageid"
+	var guest string = "testguest"
+
+	t.mockRepo.On("FindMatchByMessageID", messageID).Return(model.Match{Guest: &guest}, true, nil).Once()
+
+	_, ok, err := t.underTest.AcceptMatch(messageID, guest)
+	t.NoError(err)
+	t.Equal(false, ok)
+}
+
+func (t *ServiceTestSuite) TestAcceptMatch() {
+	var id uint = 1
+	var messageID string = "testmessageid"
+	var host string = "testhost"
+	var guest string = "testguest"
+
+	match := model.Match{
+		ID:        id,
+		MessageID: messageID,
+		Host:      host,
+	}
+
+	t.mockRepo.On("FindMatchByMessageID", messageID).Return(match, true, nil).Once()
+
+	match.Guest = &guest
+
+	t.mockRepo.On("SaveMatch", match).Return(match, nil).Once()
+
+	updatedMatch, ok, err := t.underTest.AcceptMatch(messageID, guest)
+	t.NoError(err)
+	t.Equal(true, ok)
+	t.Equal(model.Match{ID: id, MessageID: messageID, Host: host, Guest: &guest}, updatedMatch)
 }
