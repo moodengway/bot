@@ -1,6 +1,8 @@
 package bot
 
 import (
+	"fmt"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/nonya123456/connect4/internal/service"
 	"go.uber.org/zap"
@@ -51,14 +53,22 @@ func (b *Bot) Stop() error {
 }
 
 func (b *Bot) createCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+	userID := i.Member.User.ID
+
+	match, err := b.service.CreateMatch(userID)
+	if err != nil {
+		b.logger.Error("error create a new match", zap.Error(err))
+		return
+	}
+
+	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: "Created",
+			Content: fmt.Sprintf("Created match#%d", match.ID),
 		},
 	})
 
 	if err != nil {
-		b.logger.Error("error creating a new match", zap.Error(err))
+		b.logger.Error("error responding created", zap.Error(err))
 	}
 }

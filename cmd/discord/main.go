@@ -8,6 +8,8 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/nonya123456/connect4/internal/bot"
 	"github.com/nonya123456/connect4/internal/config"
+	"github.com/nonya123456/connect4/internal/postgres"
+	"github.com/nonya123456/connect4/internal/repository"
 	"github.com/nonya123456/connect4/internal/service"
 	"go.uber.org/zap"
 )
@@ -30,7 +32,13 @@ func main() {
 		logger.Panic("error creating session", zap.Error(err))
 	}
 
-	service := service.New()
+	db, err := postgres.New(cfg.Postgres)
+	if err != nil {
+		logger.Panic("error connecting postgres", zap.Error(err))
+	}
+
+	repo := repository.New(db)
+	service := service.New(repo)
 
 	bot := bot.New(session, service, logger)
 

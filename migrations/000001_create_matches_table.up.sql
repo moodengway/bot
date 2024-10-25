@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS matches (
+    id SERIAL PRIMARY KEY,
+    host VARCHAR(100) NOT NULL,
+    guest VARCHAR(100)
+);
