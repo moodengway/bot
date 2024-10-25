@@ -13,8 +13,9 @@ type Match struct {
 }
 
 const (
-	WaitingColor int = 16776960
-	PlayingColor int = 1752220
+	Aqua   int = 1752220
+	Red    int = 15548997
+	Yellow int = 16776960
 )
 
 func (m Match) MessageEmbed() discordgo.MessageEmbed {
@@ -22,11 +23,11 @@ func (m Match) MessageEmbed() discordgo.MessageEmbed {
 
 	host := createMention(m.Host)
 	guest := "N/A"
-	color := WaitingColor
+	color := Aqua
 
 	if m.Guest != nil {
 		guest = createMention(*m.Guest)
-		color = PlayingColor
+		color = Red
 	}
 
 	description := fmt.Sprintf("Red: %s\nYellow: %s", host, guest)

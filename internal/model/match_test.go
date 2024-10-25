@@ -29,7 +29,7 @@ func TestMatch_MessageEmbed(t *testing.T) {
 			want: discordgo.MessageEmbed{
 				Title:       "Match#1111",
 				Description: "Red: <@2222>\nYellow: N/A",
-				Color:       model.WaitingColor,
+				Color:       model.Aqua,
 			},
 		},
 		{
@@ -42,7 +42,7 @@ func TestMatch_MessageEmbed(t *testing.T) {
 			want: discordgo.MessageEmbed{
 				Title:       "Match#1111",
 				Description: "Red: <@2222>\nYellow: <@3333>",
-				Color:       model.PlayingColor,
+				Color:       model.Red,
 			},
 		},
 	}
