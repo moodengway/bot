@@ -56,6 +56,21 @@ func (b *Bot) createCommandHandler() func(s *discordgo.Session, i *discordgo.Int
 			return
 		}
 
-		prepareAcceptEmoji(s, i.ChannelID, res.ID, b.logger)
+		prepareEmoji(s, i.ChannelID, res.ID, b.logger)
+	}
+}
+
+func prepareEmoji(s *discordgo.Session, channelID string, messageID string, logger *zap.Logger) {
+	err := s.MessageReactionAdd(channelID, messageID, AcceptEmoji)
+	if err != nil {
+		logger.Warn("error adding accept reaction", zap.Error(err))
+	}
+
+	numbers := []string{Number1Emoji, Number2Emoji, Number3Emoji, Number4Emoji, Number5Emoji, Number6Emoji, Number7Emoji}
+	for _, emoji := range numbers {
+		err := s.MessageReactionAdd(channelID, messageID, emoji)
+		if err != nil {
+			logger.Warn("error adding number emoji", zap.Error(err), zap.String("emoji", emoji))
+		}
 	}
 }

@@ -71,8 +71,10 @@ func (b *Bot) acceptReactionHandler() func(*discordgo.Session, *discordgo.Messag
 			return
 		}
 
-		clearEmoji(s, m.ChannelID, m.MessageID, b.logger)
-		prepareNumberEmoji(s, m.ChannelID, m.MessageID, b.logger)
+		err = s.MessageReactionsRemoveEmoji(m.ChannelID, m.MessageID, AcceptEmoji)
+		if err != nil {
+			b.logger.Warn("error removing accept emoji", zap.Error(err))
+		}
 	}
 }
 
@@ -94,33 +96,6 @@ func (b *Bot) numberReactionHandler(i int) func(*discordgo.Session, *discordgo.M
 		if err != nil {
 			b.logger.Error("error editing embed", zap.Error(err))
 			return
-		}
-
-		clearEmoji(s, m.ChannelID, m.MessageID, b.logger)
-		prepareNumberEmoji(s, m.ChannelID, m.MessageID, b.logger)
-	}
-}
-
-func clearEmoji(s *discordgo.Session, channelID string, messageID string, logger *zap.Logger) {
-	err := s.MessageReactionsRemoveAll(channelID, messageID)
-	if err != nil {
-		logger.Warn("error clearing emoji", zap.Error(err))
-	}
-}
-
-func prepareAcceptEmoji(s *discordgo.Session, channelID string, messageID string, logger *zap.Logger) {
-	err := s.MessageReactionAdd(channelID, messageID, AcceptEmoji)
-	if err != nil {
-		logger.Warn("error adding accept reaction", zap.Error(err))
-	}
-}
-
-func prepareNumberEmoji(s *discordgo.Session, channelID string, messageID string, logger *zap.Logger) {
-	numbers := []string{Number1Emoji, Number2Emoji, Number3Emoji, Number4Emoji, Number5Emoji, Number6Emoji, Number7Emoji}
-	for _, emoji := range numbers {
-		err := s.MessageReactionAdd(channelID, messageID, emoji)
-		if err != nil {
-			logger.Warn("error adding number emoji", zap.Error(err), zap.String("emoji", emoji))
 		}
 	}
 }
