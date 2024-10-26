@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/nonya123456/connect4/internal/model"
-	"github.com/nonya123456/connect4/internal/util"
 )
 
 type Repository interface {
@@ -22,12 +21,12 @@ func New(repo Repository) *Service {
 }
 
 func (s *Service) CreateMatch(messageID string, host string) (model.Match, error) {
-	var board [6][7]int
+	var board model.Board
 
 	match := model.Match{
 		MessageID:   messageID,
 		Host:        host,
-		BoardString: util.BoardString(board),
+		BoardString: board.String(),
 		RoundNumber: 1,
 	}
 
@@ -93,7 +92,7 @@ func (s *Service) Place(messageID string, userID string, i int) (model.Match, bo
 		return model.Match{}, false, nil
 	}
 
-	match.BoardString = util.BoardString(board)
+	match.BoardString = board.String()
 	match.RoundNumber += 1
 
 	match, err = s.repo.SaveMatch(match)

@@ -6,6 +6,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/nonya123456/connect4/internal/model"
+	"github.com/nonya123456/connect4/internal/util"
 )
 
 func TestMatch_MessageEmbed(t *testing.T) {
@@ -42,7 +43,7 @@ func TestMatch_MessageEmbed(t *testing.T) {
 			fields: fields{
 				ID:          1111,
 				Host:        "2222",
-				Guest:       toStringPointer("3333"),
+				Guest:       util.ToPtr("3333"),
 				BoardString: "100000200000000000000000000000000002000001",
 				RoundNumber: 1,
 			},
@@ -57,7 +58,7 @@ func TestMatch_MessageEmbed(t *testing.T) {
 			fields: fields{
 				ID:          1111,
 				Host:        "2222",
-				Guest:       toStringPointer("3333"),
+				Guest:       util.ToPtr("3333"),
 				BoardString: "100000200000000000000000000000000002000001",
 				RoundNumber: 2,
 			},
@@ -85,10 +86,6 @@ func TestMatch_MessageEmbed(t *testing.T) {
 	}
 }
 
-func toStringPointer(s string) *string {
-	return &s
-}
-
 func TestMatch_Board(t *testing.T) {
 	type fields struct {
 		ID          uint
@@ -101,7 +98,7 @@ func TestMatch_Board(t *testing.T) {
 	tests := []struct {
 		name    string
 		fields  fields
-		want    [6][7]int
+		want    model.Board
 		wantErr bool
 	}{
 		{
@@ -117,7 +114,7 @@ func TestMatch_Board(t *testing.T) {
 		{
 			name:   "normal",
 			fields: fields{BoardString: "100000200000000000000000000000000002000001"},
-			want: [6][7]int{
+			want: model.Board{
 				{1, 0, 0, 0, 0, 0, 2},
 				{0, 0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 0, 0, 0, 0},
