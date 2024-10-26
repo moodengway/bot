@@ -56,9 +56,6 @@ func (b *Bot) createCommandHandler() func(s *discordgo.Session, i *discordgo.Int
 			return
 		}
 
-		err = s.MessageReactionAdd(i.ChannelID, res.ID, AcceptEmoji)
-		if err != nil {
-			b.logger.Warn("error adding accept reaction", zap.Error(err))
-		}
+		prepareAcceptEmoji(s, i.ChannelID, res.ID, b.logger)
 	}
 }
