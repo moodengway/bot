@@ -17,6 +17,7 @@ func TestMatch_MessageEmbed(t *testing.T) {
 		Host        string
 		Guest       *string
 		BoardString string
+		Board       model.Board
 		RoundNumber int
 		EndedAt     *time.Time
 	}
@@ -28,10 +29,17 @@ func TestMatch_MessageEmbed(t *testing.T) {
 		{
 			name: "waiting",
 			fields: fields{
-				ID:          1111,
-				Host:        "2222",
-				Guest:       nil,
-				BoardString: "000000000000000000000000000000000000000000",
+				ID:    1111,
+				Host:  "2222",
+				Guest: nil,
+				Board: model.Board{
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+				},
 				RoundNumber: 1,
 			},
 			want: discordgo.MessageEmbed{
@@ -43,10 +51,17 @@ func TestMatch_MessageEmbed(t *testing.T) {
 		{
 			name: "playing red turn",
 			fields: fields{
-				ID:          1111,
-				Host:        "2222",
-				Guest:       util.ToPtr("3333"),
-				BoardString: "100000200000000000000000000000000002000001",
+				ID:    1111,
+				Host:  "2222",
+				Guest: util.ToPtr("3333"),
+				Board: model.Board{
+					{1, 0, 0, 0, 0, 0, 2},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{2, 0, 0, 0, 0, 0, 1},
+				},
 				RoundNumber: 1,
 			},
 			want: discordgo.MessageEmbed{
@@ -58,10 +73,17 @@ func TestMatch_MessageEmbed(t *testing.T) {
 		{
 			name: "playing yellow turn",
 			fields: fields{
-				ID:          1111,
-				Host:        "2222",
-				Guest:       util.ToPtr("3333"),
-				BoardString: "100000200000000000000000000000000002000001",
+				ID:    1111,
+				Host:  "2222",
+				Guest: util.ToPtr("3333"),
+				Board: model.Board{
+					{1, 0, 0, 0, 0, 0, 2},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{2, 0, 0, 0, 0, 0, 1},
+				},
 				RoundNumber: 2,
 			},
 			want: discordgo.MessageEmbed{
@@ -73,10 +95,17 @@ func TestMatch_MessageEmbed(t *testing.T) {
 		{
 			name: "ended",
 			fields: fields{
-				ID:          1111,
-				Host:        "2222",
-				Guest:       util.ToPtr("3333"),
-				BoardString: "100000200000000000000000000000000002000001",
+				ID:    1111,
+				Host:  "2222",
+				Guest: util.ToPtr("3333"),
+				Board: model.Board{
+					{1, 0, 0, 0, 0, 0, 2},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+					{2, 0, 0, 0, 0, 0, 1},
+				},
 				RoundNumber: 1,
 				EndedAt:     &time.Time{},
 			},
@@ -94,6 +123,7 @@ func TestMatch_MessageEmbed(t *testing.T) {
 				MessageID:   tt.fields.MessageID,
 				Host:        tt.fields.Host,
 				Guest:       tt.fields.Guest,
+				Board:       tt.fields.Board,
 				BoardString: tt.fields.BoardString,
 				RoundNumber: tt.fields.RoundNumber,
 				EndedAt:     tt.fields.EndedAt,

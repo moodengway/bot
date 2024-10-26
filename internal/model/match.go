@@ -1,7 +1,6 @@
 package model
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -47,7 +46,7 @@ func (m *Match) MessageEmbed() discordgo.MessageEmbed {
 		color = Gray
 	}
 
-	board, _ := m.boardEmbedString()
+	board := m.boardEmbedString()
 	description := fmt.Sprintf("🔴 %s\n\n🟡 %s\n\n```%s```", host, guest, board)
 
 	return discordgo.MessageEmbed{
@@ -57,26 +56,21 @@ func (m *Match) MessageEmbed() discordgo.MessageEmbed {
 	}
 }
 
-// TODO: from Board field
-func (m *Match) boardEmbedString() (string, error) {
-	if len(m.BoardString) != 42 {
-		return "", errors.New("invalid board string length")
-	}
-
+func (m *Match) boardEmbedString() string {
 	result := ""
 
-	mapper := make(map[byte]rune)
-	mapper['0'] = '⚪'
-	mapper['1'] = '🔴'
-	mapper['2'] = '🟡'
+	mapper := make(map[int]rune)
+	mapper[0] = '⚪'
+	mapper[1] = '🔴'
+	mapper[2] = '🟡'
 
 	for i := 5; i >= 0; i-- {
 		row := ""
 		for j := 0; j < 7; j++ {
-			b := m.BoardString[i*7+j]
+			b := m.Board[i][j]
 			emoji, ok := mapper[b]
 			if !ok {
-				return "", errors.New("invalid byte in board string")
+				emoji = '⚪'
 			}
 
 			row += fmt.Sprintf("%c ", emoji)
@@ -87,7 +81,7 @@ func (m *Match) boardEmbedString() (string, error) {
 	}
 
 	result += "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣"
-	return result, nil
+	return result
 }
 
 func (m *Match) BeforeSave(tx *gorm.DB) (err error) {
