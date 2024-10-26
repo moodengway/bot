@@ -54,6 +54,23 @@ func (s *Service) AcceptMatch(messageID string, guest string) (model.Match, bool
 	return match, true, nil
 }
 
-func (s *Service) Place(i int) error {
-	return nil
+// TODO: add test
+func (s *Service) Place(messageID string, userID string, i int) (model.Match, bool, error) {
+	match, found, err := s.repo.FindMatchByMessageID(messageID)
+	if err != nil {
+		return model.Match{}, false, err
+	}
+
+	if !found || match.Guest == nil {
+		return model.Match{}, false, nil
+	}
+
+	match.RoundNumber += 1
+
+	match, err = s.repo.SaveMatch(match)
+	if err != nil {
+		return model.Match{}, false, err
+	}
+
+	return match, true, nil
 }

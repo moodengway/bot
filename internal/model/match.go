@@ -33,6 +33,9 @@ func (m Match) MessageEmbed() discordgo.MessageEmbed {
 	if m.Guest != nil {
 		guest = util.Mention(*m.Guest)
 		color = Red
+		if m.RoundNumber%2 == 0 {
+			color = Yellow
+		}
 	}
 
 	board, _ := m.boardEmbedString()

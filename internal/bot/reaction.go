@@ -76,8 +76,26 @@ func (b *Bot) acceptReactionHandler() func(*discordgo.Session, *discordgo.Messag
 	}
 }
 
-func (b *Bot) numberReactionHandler(_ int) func(*discordgo.Session, *discordgo.MessageReactionAdd) {
+func (b *Bot) numberReactionHandler(i int) func(*discordgo.Session, *discordgo.MessageReactionAdd) {
 	return func(s *discordgo.Session, m *discordgo.MessageReactionAdd) {
+		match, ok, err := b.service.Place(m.MessageID, m.UserID, i)
+		if err != nil {
+			b.logger.Error("error placing checker", zap.Error(err))
+			return
+		}
+
+		if !ok {
+			b.logger.Debug("match is not found or user is not allowed")
+			return
+		}
+
+		matchEmbed := match.MessageEmbed()
+		_, err = s.ChannelMessageEditEmbed(m.ChannelID, m.MessageID, &matchEmbed)
+		if err != nil {
+			b.logger.Error("error editing embed", zap.Error(err))
+			return
+		}
+
 		clearEmoji(s, m.ChannelID, m.MessageID, b.logger)
 		prepareNumberEmoji(s, m.ChannelID, m.MessageID, b.logger)
 	}

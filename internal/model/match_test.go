@@ -29,6 +29,7 @@ func TestMatch_MessageEmbed(t *testing.T) {
 				Host:        "2222",
 				Guest:       nil,
 				BoardString: "000000000000000000000000000000000000000000",
+				RoundNumber: 1,
 			},
 			want: discordgo.MessageEmbed{
 				Title:       "Match#1111",
@@ -37,17 +38,33 @@ func TestMatch_MessageEmbed(t *testing.T) {
 			},
 		},
 		{
-			name: "playing",
+			name: "playing red turn",
 			fields: fields{
 				ID:          1111,
 				Host:        "2222",
 				Guest:       toStringPointer("3333"),
 				BoardString: "100000200000000000000000000000000002000001",
+				RoundNumber: 1,
 			},
 			want: discordgo.MessageEmbed{
 				Title:       "Match#1111",
 				Description: "🔴 <@2222>\n\n🟡 <@3333>\n\n```🟡 ⚪ ⚪ ⚪ ⚪ ⚪ 🔴\n⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪\n⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪\n⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪\n⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪\n🔴 ⚪ ⚪ ⚪ ⚪ ⚪ 🟡\n1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣```",
 				Color:       model.Red,
+			},
+		},
+		{
+			name: "playing yellow turn",
+			fields: fields{
+				ID:          1111,
+				Host:        "2222",
+				Guest:       toStringPointer("3333"),
+				BoardString: "100000200000000000000000000000000002000001",
+				RoundNumber: 2,
+			},
+			want: discordgo.MessageEmbed{
+				Title:       "Match#1111",
+				Description: "🔴 <@2222>\n\n🟡 <@3333>\n\n```🟡 ⚪ ⚪ ⚪ ⚪ ⚪ 🔴\n⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪\n⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪\n⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪\n⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪\n🔴 ⚪ ⚪ ⚪ ⚪ ⚪ 🟡\n1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣```",
+				Color:       model.Yellow,
 			},
 		},
 	}
