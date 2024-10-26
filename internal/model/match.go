@@ -7,6 +7,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/nonya123456/connect4/internal/util"
+	"gorm.io/gorm"
 )
 
 type Match struct {
@@ -14,6 +15,7 @@ type Match struct {
 	MessageID   string     `gorm:"column:message_id"`
 	Host        string     `gorm:"column:host"`
 	Guest       *string    `gorm:"column:guest"`
+	Board       Board      `gorm:"-"`
 	BoardString string     `gorm:"column:board_string"`
 	RoundNumber int        `gorm:"column:round_number"`
 	EndedAt     *time.Time `gorm:"column:ended_at"`
@@ -25,7 +27,7 @@ const (
 	Yellow int = 16776960
 )
 
-func (m Match) MessageEmbed() discordgo.MessageEmbed {
+func (m *Match) MessageEmbed() discordgo.MessageEmbed {
 	title := fmt.Sprintf("Match#%d", m.ID)
 
 	host := util.Mention(m.Host)
@@ -50,7 +52,7 @@ func (m Match) MessageEmbed() discordgo.MessageEmbed {
 	}
 }
 
-func (m Match) boardEmbedString() (string, error) {
+func (m *Match) boardEmbedString() (string, error) {
 	if len(m.BoardString) != 42 {
 		return "", errors.New("invalid board string length")
 	}
@@ -82,28 +84,17 @@ func (m Match) boardEmbedString() (string, error) {
 	return result, nil
 }
 
-func (m Match) Board() (Board, error) {
-	if len(m.BoardString) != 42 {
-		return Board{}, errors.New("invalid board string length")
+func (m *Match) BeforeSave(tx *gorm.DB) (err error) {
+	m.BoardString = m.Board.String()
+	return nil
+}
+
+func (m *Match) AfterFind(tx *gorm.DB) (err error) {
+	board, err := ParseBoard(m.BoardString)
+	if err != nil {
+		return err
 	}
 
-	mapper := make(map[byte]int)
-	mapper['0'] = 0
-	mapper['1'] = 1
-	mapper['2'] = 2
-
-	var board Board
-	for i := 0; i < 6; i++ {
-		for j := 0; j < 7; j++ {
-			b := m.BoardString[i*7+j]
-			num, ok := mapper[b]
-			if !ok {
-				return Board{}, errors.New("invalid byte in board string")
-			}
-
-			board[i][j] = num
-		}
-	}
-
-	return board, nil
+	m.Board = board
+	return nil
 }

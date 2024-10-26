@@ -72,18 +72,13 @@ func (s *Service) Place(messageID string, userID string, i int) (model.Match, bo
 		return model.Match{}, false, nil
 	}
 
-	board, err := match.Board()
-	if err != nil {
-		return model.Match{}, false, err
-	}
-
 	placed := false
 	for j := 0; j < 6; j++ {
-		if board[j][i-1] != 0 {
+		if match.Board[j][i-1] != 0 {
 			continue
 		}
 
-		board[j][i-1] = 2 - (match.RoundNumber % 2)
+		match.Board[j][i-1] = 2 - (match.RoundNumber % 2)
 		placed = true
 		break
 	}
@@ -92,7 +87,6 @@ func (s *Service) Place(messageID string, userID string, i int) (model.Match, bo
 		return model.Match{}, false, nil
 	}
 
-	match.BoardString = board.String()
 	match.RoundNumber += 1
 
 	match, err = s.repo.SaveMatch(match)
