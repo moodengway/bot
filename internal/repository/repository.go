@@ -35,7 +35,7 @@ func (r *Repository) SaveMatch(match model.Match) (model.Match, error) {
 
 func (r *Repository) FindMatchByMessageID(messageID string) (model.Match, bool, error) {
 	var match model.Match
-	if err := r.db.Where("message_id = ?", messageID).First(&match).Error; err != nil {
+	if err := r.db.Where("message_id = ? AND ended_at IS NULL", messageID).First(&match).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return model.Match{}, false, nil
 		}

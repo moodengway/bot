@@ -86,3 +86,79 @@ func TestParseBoard(t *testing.T) {
 		})
 	}
 }
+
+func TestBoard_Winner(t *testing.T) {
+	tests := []struct {
+		name string
+		b    model.Board
+		want int
+	}{
+		{
+			name: "0",
+			b: model.Board{
+				{1, 0, 0, 0, 0, 0, 2},
+				{0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0},
+				{2, 0, 0, 0, 0, 0, 1},
+			},
+			want: 0,
+		},
+		{
+			name: "horizontal",
+			b: model.Board{
+				{1, 1, 1, 1, 0, 0, 2},
+				{0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0, 0, 0},
+				{2, 0, 0, 0, 0, 0, 1},
+			},
+			want: 1,
+		},
+		{
+			name: "vertical",
+			b: model.Board{
+				{1, 1, 1, 2, 1, 2, 2},
+				{0, 0, 0, 0, 0, 0, 2},
+				{0, 0, 0, 0, 0, 0, 2},
+				{0, 0, 0, 0, 0, 0, 2},
+				{0, 0, 0, 0, 0, 0, 0},
+				{2, 0, 0, 0, 0, 0, 1},
+			},
+			want: 2,
+		},
+		{
+			name: "diagonal 1",
+			b: model.Board{
+				{1, 1, 1, 2, 1, 2, 2},
+				{0, 0, 0, 0, 0, 2, 2},
+				{0, 0, 0, 0, 2, 0, 0},
+				{0, 0, 0, 2, 0, 0, 2},
+				{0, 0, 0, 0, 0, 0, 0},
+				{2, 0, 0, 0, 0, 0, 1},
+			},
+			want: 2,
+		},
+		{
+			name: "diagonal 2",
+			b: model.Board{
+				{1, 1, 1, 2, 1, 2, 2},
+				{0, 1, 0, 0, 0, 0, 2},
+				{0, 0, 1, 0, 0, 0, 0},
+				{0, 0, 0, 1, 0, 0, 2},
+				{0, 0, 0, 0, 0, 0, 0},
+				{2, 0, 0, 0, 0, 0, 1},
+			},
+			want: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.b.Winner(); got != tt.want {
+				t.Errorf("Board.Winner() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

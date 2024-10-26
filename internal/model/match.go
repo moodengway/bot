@@ -25,6 +25,7 @@ const (
 	Aqua   int = 1752220
 	Red    int = 15548997
 	Yellow int = 16776960
+	Gray   int = 9936031
 )
 
 func (m *Match) MessageEmbed() discordgo.MessageEmbed {
@@ -42,6 +43,10 @@ func (m *Match) MessageEmbed() discordgo.MessageEmbed {
 		}
 	}
 
+	if m.EndedAt != nil {
+		color = Gray
+	}
+
 	board, _ := m.boardEmbedString()
 	description := fmt.Sprintf("🔴 %s\n\n🟡 %s\n\n```%s```", host, guest, board)
 
@@ -52,6 +57,7 @@ func (m *Match) MessageEmbed() discordgo.MessageEmbed {
 	}
 }
 
+// TODO: from Board field
 func (m *Match) boardEmbedString() (string, error) {
 	if len(m.BoardString) != 42 {
 		return "", errors.New("invalid board string length")
@@ -97,4 +103,8 @@ func (m *Match) AfterFind(tx *gorm.DB) (err error) {
 
 	m.Board = board
 	return nil
+}
+
+func (m *Match) IsEnded() bool {
+	return m.Board.Winner() != 0 || m.RoundNumber > 42
 }

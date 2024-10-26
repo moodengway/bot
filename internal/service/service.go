@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/nonya123456/connect4/internal/model"
 )
 
@@ -88,6 +90,11 @@ func (s *Service) Place(messageID string, userID string, i int) (model.Match, bo
 	}
 
 	match.RoundNumber += 1
+
+	if match.IsEnded() {
+		now := time.Now()
+		match.EndedAt = &now
+	}
 
 	match, err = s.repo.SaveMatch(match)
 	if err != nil {
