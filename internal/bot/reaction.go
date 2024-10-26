@@ -19,6 +19,13 @@ const (
 func (b *Bot) addReactionHandler() {
 	reactionHandler := make(map[string]func(*discordgo.Session, *discordgo.MessageReactionAdd))
 	reactionHandler[AcceptEmoji] = b.acceptReactionHandler()
+	reactionHandler[Number1Emoji] = b.numberReactionHandler(1)
+	reactionHandler[Number2Emoji] = b.numberReactionHandler(2)
+	reactionHandler[Number3Emoji] = b.numberReactionHandler(3)
+	reactionHandler[Number4Emoji] = b.numberReactionHandler(4)
+	reactionHandler[Number5Emoji] = b.numberReactionHandler(5)
+	reactionHandler[Number6Emoji] = b.numberReactionHandler(6)
+	reactionHandler[Number7Emoji] = b.numberReactionHandler(7)
 
 	b.session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageReactionAdd) {
 		if m.UserID == s.State.User.ID {
@@ -64,6 +71,13 @@ func (b *Bot) acceptReactionHandler() func(*discordgo.Session, *discordgo.Messag
 			return
 		}
 
+		clearEmoji(s, m.ChannelID, m.MessageID, b.logger)
+		prepareNumberEmoji(s, m.ChannelID, m.MessageID, b.logger)
+	}
+}
+
+func (b *Bot) numberReactionHandler(_ int) func(*discordgo.Session, *discordgo.MessageReactionAdd) {
+	return func(s *discordgo.Session, m *discordgo.MessageReactionAdd) {
 		clearEmoji(s, m.ChannelID, m.MessageID, b.logger)
 		prepareNumberEmoji(s, m.ChannelID, m.MessageID, b.logger)
 	}
