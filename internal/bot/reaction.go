@@ -64,12 +64,15 @@ func (b *Bot) acceptReactionHandler() func(*discordgo.Session, *discordgo.Messag
 			return
 		}
 
-		err = s.MessageReactionsRemoveEmoji(m.ChannelID, m.MessageID, AcceptEmoji)
-		if err != nil {
-			b.logger.Warn("error removing accept emoji", zap.Error(err))
-		}
-
+		clearEmoji(s, m.ChannelID, m.MessageID, b.logger)
 		prepareNumberEmoji(s, m.ChannelID, m.MessageID, b.logger)
+	}
+}
+
+func clearEmoji(s *discordgo.Session, channelID string, messageID string, logger *zap.Logger) {
+	err := s.MessageReactionsRemoveAll(channelID, messageID)
+	if err != nil {
+		logger.Warn("error clearing emoji", zap.Error(err))
 	}
 }
 
