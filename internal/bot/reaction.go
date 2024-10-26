@@ -11,7 +11,7 @@ const (
 
 func (b *Bot) addReactionHandler() {
 	reactionHandler := make(map[string]func(*discordgo.Session, *discordgo.MessageReactionAdd))
-	reactionHandler[AcceptEmoji] = b.acceptReactionHandler
+	reactionHandler[AcceptEmoji] = b.acceptReactionHandler()
 
 	b.session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageReactionAdd) {
 		if m.UserID == s.State.User.ID {
@@ -37,27 +37,29 @@ func (b *Bot) addReactionHandler() {
 	})
 }
 
-func (b *Bot) acceptReactionHandler(s *discordgo.Session, m *discordgo.MessageReactionAdd) {
-	match, ok, err := b.service.AcceptMatch(m.MessageID, m.UserID)
-	if err != nil {
-		b.logger.Error("error accepting match", zap.Error(err))
-		return
-	}
+func (b *Bot) acceptReactionHandler() func(*discordgo.Session, *discordgo.MessageReactionAdd) {
+	return func(s *discordgo.Session, m *discordgo.MessageReactionAdd) {
+		match, ok, err := b.service.AcceptMatch(m.MessageID, m.UserID)
+		if err != nil {
+			b.logger.Error("error accepting match", zap.Error(err))
+			return
+		}
 
-	if !ok {
-		b.logger.Debug("match is not found or is already accepted")
-		return
-	}
+		if !ok {
+			b.logger.Debug("match is not found or is already accepted")
+			return
+		}
 
-	matchEmbed := match.MessageEmbed()
-	_, err = s.ChannelMessageEditEmbed(m.ChannelID, m.MessageID, &matchEmbed)
-	if err != nil {
-		b.logger.Error("error editing embed", zap.Error(err))
-		return
-	}
+		matchEmbed := match.MessageEmbed()
+		_, err = s.ChannelMessageEditEmbed(m.ChannelID, m.MessageID, &matchEmbed)
+		if err != nil {
+			b.logger.Error("error editing embed", zap.Error(err))
+			return
+		}
 
-	err = s.MessageReactionsRemoveAll(m.ChannelID, m.MessageID)
-	if err != nil {
-		b.logger.Warn("error removing reactions", zap.Error(err))
+		err = s.MessageReactionsRemoveAll(m.ChannelID, m.MessageID)
+		if err != nil {
+			b.logger.Warn("error removing reactions", zap.Error(err))
+		}
 	}
 }
