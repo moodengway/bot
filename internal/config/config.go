@@ -7,7 +7,7 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-type Config struct {
+type AppConfig struct {
 	Token    string         `envconfig:"TOKEN"`
 	Postgres PostgresConfig `envconfig:"POSTGRES"`
 }
@@ -21,16 +21,16 @@ type PostgresConfig struct {
 	SSLMode  string `envconfig:"SSL_MODE" default:"disable"`
 }
 
-func LoadConfig() (Config, error) {
+func LoadConfig() (AppConfig, error) {
 	env, ok := os.LookupEnv("ENV")
 	if ok && env != "" {
 		if err := godotenv.Load(); err != nil {
-			return Config{}, err
+			return AppConfig{}, err
 		}
 	}
 
-	var cfg Config
-	envconfig.MustProcess("", &cfg)
+	var cfg AppConfig
+	envconfig.MustProcess("APP", &cfg)
 
 	return cfg, nil
 }
