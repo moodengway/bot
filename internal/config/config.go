@@ -1,6 +1,9 @@
 package config
 
 import (
+	"os"
+
+	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -18,8 +21,16 @@ type PostgresConfig struct {
 	SSLMode  string `envconfig:"SSL_MODE" default:"disable"`
 }
 
-func New() Config {
+func LoadConfig() (Config, error) {
+	env, ok := os.LookupEnv("ENV")
+	if ok && env != "" {
+		if err := godotenv.Load(); err != nil {
+			return Config{}, err
+		}
+	}
+
 	var cfg Config
 	envconfig.MustProcess("", &cfg)
-	return cfg
+
+	return cfg, nil
 }

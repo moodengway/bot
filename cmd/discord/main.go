@@ -5,7 +5,6 @@ import (
 	"os/signal"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/joho/godotenv"
 	"github.com/nonya123456/connect4/internal/bot"
 	"github.com/nonya123456/connect4/internal/config"
 	"github.com/nonya123456/connect4/internal/postgres"
@@ -20,12 +19,10 @@ func main() {
 		_ = logger.Sync()
 	}()
 
-	err := godotenv.Load()
+	cfg, err := config.LoadConfig()
 	if err != nil {
-		logger.Panic("error loading env file", zap.Error(err))
+		logger.Panic("error loading config", zap.Error(err))
 	}
-
-	cfg := config.New()
 
 	session, err := discordgo.New("Bot " + cfg.Token)
 	if err != nil {
