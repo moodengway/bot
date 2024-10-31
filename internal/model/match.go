@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/nonya123456/connect4/internal/util"
+	"github.com/moodengway/bot/internal/util"
 	"gorm.io/gorm"
 )
 

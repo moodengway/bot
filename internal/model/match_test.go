@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/nonya123456/connect4/internal/model"
-	"github.com/nonya123456/connect4/internal/util"
+	"github.com/moodengway/bot/internal/model"
+	"github.com/moodengway/bot/internal/util"
 )
 
 func TestMatch_MessageEmbed(t *testing.T) {

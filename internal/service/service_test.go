@@ -3,9 +3,9 @@ package service_test
 import (
 	"testing"
 
-	"github.com/nonya123456/connect4/internal/model"
-	"github.com/nonya123456/connect4/internal/service"
-	"github.com/nonya123456/connect4/internal/service/mock"
+	"github.com/moodengway/bot/internal/model"
+	"github.com/moodengway/bot/internal/service"
+	"github.com/moodengway/bot/internal/service/mock"
 	"github.com/stretchr/testify/suite"
 )
 

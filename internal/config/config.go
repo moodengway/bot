@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -19,6 +20,10 @@ type PostgresConfig struct {
 	Password string `envconfig:"PASSWORD" required:"true"`
 	DBName   string `envconfig:"DB_NAME" required:"true"`
 	SSLMode  string `envconfig:"SSL_MODE" default:"disable"`
+}
+
+func (c PostgresConfig) DSN() string {
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=Asia/Bangkok", c.Host, c.User, c.Password, c.DBName, c.Port, c.SSLMode)
 }
 
 func LoadConfig() (AppConfig, error) {

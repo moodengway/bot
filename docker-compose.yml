@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: connect4_postgres
+    container_name: bot_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres

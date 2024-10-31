@@ -3,7 +3,7 @@ package service
 import (
 	"time"
 
-	"github.com/nonya123456/connect4/internal/model"
+	"github.com/moodengway/bot/internal/model"
 )
 
 type Repository interface {

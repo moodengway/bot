@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/nonya123456/connect4/internal/model"
+	"github.com/moodengway/bot/internal/model"
 )
 
 func TestBoard_String(t *testing.T) {

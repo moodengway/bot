@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/nonya123456/connect4/internal/util"
+	"github.com/moodengway/bot/internal/util"
 	"go.uber.org/zap"
 )
 

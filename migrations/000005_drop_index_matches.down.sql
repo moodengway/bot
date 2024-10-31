@@ -1,1 +1,0 @@
-CREATE INDEX IF NOT EXISTS idx_matches_message_id ON matches (message_id);

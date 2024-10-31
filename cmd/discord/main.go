@@ -5,11 +5,11 @@ import (
 	"os/signal"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/nonya123456/connect4/internal/bot"
-	"github.com/nonya123456/connect4/internal/config"
-	"github.com/nonya123456/connect4/internal/postgres"
-	"github.com/nonya123456/connect4/internal/repository"
-	"github.com/nonya123456/connect4/internal/service"
+	"github.com/moodengway/bot/internal/bot"
+	"github.com/moodengway/bot/internal/config"
+	"github.com/moodengway/bot/internal/postgres"
+	"github.com/moodengway/bot/internal/repository"
+	"github.com/moodengway/bot/internal/service"
 	"go.uber.org/zap"
 )
 
